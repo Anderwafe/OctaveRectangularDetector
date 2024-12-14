@@ -1,6 +1,6 @@
 pkg load image
 clear;
-input_image = imread("input.png");
+input_image = imread("input.jpg");
 input_image_grayscale = rgb2gray(input_image);
 input_image_threshold = graythresh(input_image_grayscale, "MinError");
 input_image_black_white = ~im2bw(input_image_grayscale, input_image_threshold);
@@ -49,5 +49,6 @@ for j = 1:numel(properts)
         endfor
     endfor
 endfor
-
+imwrite(final_image, "output.png");
 imshow(final_image);
+
