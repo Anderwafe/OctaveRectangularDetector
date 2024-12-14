@@ -55,9 +55,30 @@ imshow(input_image);
 final_image = input_image;
 
 for j = 1:numel(properts)
+    if(properts(j).Area == 1)
+    continue;
+    endif
     filled_image_property = properts(j).FilledImage;
+##    grayscale_prerotated_image = input_image_grayscale([round(properts(j).BoundingBox(:, 2)):round((properts(j).BoundingBox(:, 2) + properts(j).BoundingBox(:, 4))-1)], [round(properts(j).BoundingBox(:, 1)):round((properts(j).BoundingBox(:, 1)+properts(j).BoundingBox(:, 3))-1)]);
+##    grayscale_prerotated_image_masked = grayscale_prerotated_image .* properts(j).FilledImage;
+##    subplot(1,2,1);
+##    imshow(properts(j).FilledImage);
+##    subplot(1,2,2);
+##    grayscale_rotated_image = imrotate(grayscale_prerotated_image_masked, properts(j).Orientation, "cubic");
+##    imshow(grayscale_rotated_image);
+
+    image_property_regions = bwlabel(filled_image_property);
+    image_property_properts = regionprops(image_property_regions, 'all');
+    if(numel(image_property_properts) != 1)
+        continue;
+    endif
+
+    grayscale_rotated_image = imrotate(filled_image_property, -image_property_properts(1).Orientation, 'linear');
+    subplot(1,2,1);
+    imshow(properts(j).FilledImage);
     subplot(1,2,2);
-    imshow(filled_image_property);
+    imshow(grayscale_rotated_image);
+
     region_buffer = bwpropfilt(filled_image_property, 'Extent', [0.9 1]);
     property_buffer = regionprops(region_buffer, "all");
     for i = 1:numel(property_buffer)
