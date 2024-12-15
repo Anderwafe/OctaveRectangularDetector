@@ -7,6 +7,7 @@ input_image_black_white = ~im2bw(input_image_grayscale, input_image_threshold);
 regions = bwlabel(input_image_black_white);
 properts = regionprops(regions, "all");
 final_image = input_image;
+summary_area = 0;
 for j = 1:numel(properts)
     if(properts(j).Area == 1)
         continue;
@@ -27,10 +28,11 @@ for j = 1:numel(properts)
     endif
     property_buffer = properts(j);
     for i = 1:numel(property_buffer)
-        y = round(property_buffer(i).BoundingBox(:, 1));
-        x = round(property_buffer(i).BoundingBox(:, 2));
-        h = round(property_buffer(i).BoundingBox(:, 3));
-        w = round(property_buffer(i).BoundingBox(:, 4));
+        summary_area += property_buffer(i).FilledArea;
+        y = round(property_buffer(i).BoundingBox(:, 1))-1;
+        x = round(property_buffer(i).BoundingBox(:, 2))-1;
+        h = round(property_buffer(i).BoundingBox(:, 3))+2;
+        w = round(property_buffer(i).BoundingBox(:, 4))+2;
         for yi = y:y+h
             final_image(x, yi, 1) = 255;
             final_image(x, yi, 2) = 0;
